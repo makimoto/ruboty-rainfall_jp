@@ -9,7 +9,7 @@ module Ruboty
       DEFAULT_LOCATION = 'Ebisu'
 
       on(
-        /Tell rainfall(?: (?:at|in) (?<query>.+))?/i,
+        /Tell (:?me )?rainfall(?: (?:at|in) (?<query>.+))?\z/i,
         name: 'rainfall_jp',
         description: 'show rainfall forecast'
       )
@@ -29,7 +29,7 @@ module Ruboty
         end
 
         result = fetch_rainfall(geometry)
-        message.reply("Rainfall forecast: #{query} (#{geometry})")
+        message.reply("Rainfall forecast: #{query} (l/l: #{geometry})")
         message.reply(result)
       rescue Exception => e
         message.reply('ಠ_ಠ')
