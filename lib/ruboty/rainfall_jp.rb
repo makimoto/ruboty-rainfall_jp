@@ -20,7 +20,7 @@ module Ruboty
         end
 
         query = message.match_data['query'] || DEFAULT_LOCATION
-        geometry = fetch_coodinated_geometry(query)
+        name, geometry = fetch_location_name_and_coodinated_geometry(query)
 
         if geometry.nil?
           message.reply('ಠ_ಠ')
@@ -29,7 +29,7 @@ module Ruboty
         end
 
         result = fetch_rainfall(geometry)
-        message.reply("Rainfall forecast: #{query} (l/l: #{geometry})")
+        message.reply("Rainfall forecast: #{name} (l/l: #{geometry})")
         message.reply(result)
       rescue Exception => e
         message.reply('ಠ_ಠ')
@@ -39,14 +39,14 @@ module Ruboty
 
       private
 
-      def fetch_coodinated_geometry(query)
+      def fetch_location_name_and_coodinated_geometry(query)
         url = "http://geo.search.olp.yahooapis.jp/OpenLocalPlatform/V1/geoCoder?appid=#{YAHOO_JAPAN_APP_ID}&output=json&query=#{CGI.escape(query)}"
         response = JSON.parse(open(url).read)
         features = response["Feature"]
         if features.nil? || features.first.nil?
           return nil
         end
-        features.first["Geometry"]["Coordinates"]
+        [features.first["Name"], features.first["Geometry"]["Coordinates"]]
       end
       
       def fetch_rainfall(geometry)
