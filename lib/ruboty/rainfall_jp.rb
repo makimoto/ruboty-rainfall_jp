@@ -42,21 +42,21 @@ module Ruboty
       def fetch_coodinated_geometry(query)
         url = "http://geo.search.olp.yahooapis.jp/OpenLocalPlatform/V1/geoCoder?appid=#{YAHOO_JAPAN_APP_ID}&output=json&query=#{CGI.escape(query)}"
         response = JSON.parse(open(url).read)
-        feature = response["Feature"]&.first
-        if feature.nil?
+        features = response["Feature"]
+        if features.nil? || features.first.nil?
           return nil
         end
-        feature["Geometry"]["Coordinates"]
+        features.first["Geometry"]["Coordinates"]
       end
       
       def fetch_rainfall(geometry)
         url = "http://weather.olp.yahooapis.jp/v1/place\?appid\=#{YAHOO_JAPAN_APP_ID}\&output=json&coordinates\=#{geometry}"
         response = JSON.parse(open(url).read)
-        feature = response["Feature"]&.first
-        if feature.nil?
+        features = response["Feature"]
+        if features.nil? || features.first.nil?
           return nil
         end
-        datapoints = feature["Property"]["WeatherList"]["Weather"]
+        datapoints = features.first["Property"]["WeatherList"]["Weather"]
         result = StringIO.new
         datapoints.each do |data|
           result.puts("#{Time.parse(data["Date"]).strftime("%m-%d %H:%M")} #{data["Rainfall"]} mm/h")
