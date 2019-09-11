@@ -40,7 +40,7 @@ module Ruboty
       private
 
       def fetch_location_name_and_coodinated_geometry(query)
-        url = "http://geo.search.olp.yahooapis.jp/OpenLocalPlatform/V1/geoCoder?appid=#{YAHOO_JAPAN_APP_ID}&output=json&query=#{CGI.escape(query)}"
+        url = "https://map.yahooapis.jp/geocode/V1/geoCoder?appid=#{YAHOO_JAPAN_APP_ID}&output=json&query=#{CGI.escape(query)}"
         response = JSON.parse(OpenURI.open_uri(url).read)
         features = response["Feature"]
         if features.nil? || features.first.nil?
@@ -50,7 +50,7 @@ module Ruboty
       end
       
       def fetch_rainfall(geometry)
-        url = "http://weather.olp.yahooapis.jp/v1/place\?appid\=#{YAHOO_JAPAN_APP_ID}\&output=json&coordinates\=#{geometry}"
+        url = "https://map.yahooapis.jp/weather/V1/place?appid=#{YAHOO_JAPAN_APP_ID}&output=json&coordinates=#{geometry}"
         response = JSON.parse(OpenURI.open_uri(url).read)
         features = response["Feature"]
         if features.nil? || features.first.nil?
